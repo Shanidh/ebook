@@ -2,9 +2,6 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from .models import *
 from rest_framework.response import Response
-from rest_framework import generics
-from . serializers import ebookserialzer
-from django_filters.rest_framework import DjangoFilterBackend
 import jwt
 
 # Create your views here.
@@ -24,7 +21,7 @@ def funapi(request, id=0):
 
     # get in api
     elif request.method == "GET":
-
+        # get through params
         params = request.GET
         obj1 = Ebook.objects.filter(fkUser=params['userId'])
 
@@ -65,6 +62,7 @@ def funuserlogin(request):
        password = data['password']
        lg=User.objects.get(username=username)
        if lg.password==password:
+           # to covert into jwt token
             encoded_jwt = jwt.encode({"userid": lg.id}, "django-insecure-2a*#0#4&-3e+xup807gm(kvs(c%xnsh0_3fu8y3-7#xpkjg0-2", algorithm="HS256")
             obj3=Usertoken(token=encoded_jwt, fkUser=lg)
             obj3.save()
@@ -80,10 +78,3 @@ def funuserget(request):
         jsonData=[{'id':i.id,'username':i.username,'password':i.password}for i in obj1]
         return Response({'data':jsonData})
 
-# to get token details
-@api_view(['GET'])
-def funtoken(request):
-    if request.method == "GET":
-        obj1=Usertoken.objects.all()
-        jsonData=[{'id':i.id,'token':i.token,'fkUser':i.fkUser}for i in obj1]
-        return Response({'data':jsonData})
