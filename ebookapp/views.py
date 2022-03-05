@@ -26,7 +26,8 @@ def funapi(request, id=0):
         obj1 = Ebook.objects.filter(fkUser=params['userId'])
 
         jsonData = [{'id':i.id,'title':i.title,'author':i.author,'genre':i.genre,'review':i.review,'favourite':i.favourite}for i in obj1]
-
+        
+        #sorted by title
         jsonData = sorted(jsonData, key=lambda d: d['title'])
 
         return Response({'data':jsonData})
